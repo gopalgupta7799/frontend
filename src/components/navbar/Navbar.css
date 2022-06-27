@@ -1,0 +1,36 @@
+#navbar {
+  width: 100vw;
+  height: fit-content;
+  min-height: 50px;
+  background-color: rgba(206, 201, 201, 0.185);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#logo {
+  filter: invert();
+  width: 50px;
+
+}
+
+#navList {
+  list-style: none;
+  display: flex;
+  justify-content: space-evenly;
+  width: 400px;
+}
+
+.navListItem {
+  padding: 10px;
+  text-decoration: none;
+  font-size: 1.7rem;
+}
+
+.navListItem:hover {
+  background-color: rgb(185, 177, 177);
+}
+
+.active {
+  background-color: rgb(185, 177, 177);
+}
