@@ -3,40 +3,47 @@ import React, { useEffect } from 'react'
 import * as three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { DragControls } from 'three/examples/jsm/controls/DragControls'
-
-import backgroundImage from '../../Images/bg3.jpg'
+import { Typography } from '@mui/material'
+import TimeLine from '../timeLine/TimeLine'
+import myImage from '../../Images/myImage.png'
 
 export default function Home() {
   useEffect(() => {
 
-    window.scrollTo(0, 0)
+    const shape = document.getElementById('shape');
+    const ctx = shape.getContext('2d');
+    const width = shape.width
+    ctx.beginPath();
+    ctx.fillStyle = 'rgb(216, 216, 216)'
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(width / 2, 20, width, 0);
+    ctx.fill();
 
+    window.scrollTo(0, 0)
 
     const scene = new three.Scene()
     const camera = new three.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000)
     camera.position.set(0, 0, 8)
 
-    const textureLoader = new three.TextureLoader()
-    const bgTexture = textureLoader.load(backgroundImage)
-    scene.background = bgTexture
-
     const canvas = document.getElementById('canvas')
-    const renderer = new three.WebGLRenderer({ canvas })
+    const renderer = new three.WebGLRenderer({ canvas, alpha: true })
 
-    const noOfBubbles = 40
+    // camera.lookAt(scene.position);
+
+    const noOfBubbles = 30
     let bubbles = [];
     let ymove = []
     let xmove = []
     let stoppedBubbleIndex = null
     for (let i = 0; i < noOfBubbles; i++) {
-      let bubbleGeometry = new three.SphereGeometry(0.3 + Math.random() * 1.2, 64, 32)
+      let bubbleGeometry = new three.SphereGeometry(0.2 + Math.random(), 64, 32)
       let bubbleMaterial = new three.MeshStandardMaterial({ color: 'white' })
       let bubble = new three.Mesh(bubbleGeometry, bubbleMaterial)
       bubble.position.x = -3 + Math.random() * 6
       bubble.position.y = -27 + Math.random() * 12
       bubble.position.z = -5 + Math.random() * 6
       xmove.push(-0.1 + Math.random() * 0.2)
-      ymove.push(0.1 + Math.random() * 0.2)
+      ymove.push(0.1 + Math.random() * 0.25)
       bubbles.push(bubble)
       scene.add(bubble)
     }
@@ -59,13 +66,10 @@ export default function Home() {
       }
     })
 
-    const light = new three.PointLight(0xffffff, 1);
-    const light2 = new three.PointLight(0xffffff, 0.5);
+    const light = new three.PointLight(0xffffff, 1)
 
-    light.position.set(1, 4, 8);
-    light2.position.set(-1, -4, 0);
+    light.position.set(1, 4, 8)
     scene.add(light)
-    scene.add(light2)
 
     const moveBubbles = () => {
       requestAnimationFrame(moveBubbles)
@@ -77,28 +81,44 @@ export default function Home() {
     moveBubbles()
 
     const resetBubbles = () => {
-      bubbles.forEach((bubble) => {
+      bubbles.forEach((bubble, i) => {
         if (bubble.position.y > 15) {
           bubble.position.x = -3 + Math.random() * 6
           bubble.position.y = -27 + Math.random() * 12
           bubble.position.z = -5 + Math.random() * 6
+          xmove[i] = -0.1 + Math.random() * 0.2
+          ymove[i] = 0.1 + Math.random() * 0.25
         }
       })
     }
 
     const resetMoves = () => {
       if (stoppedBubbleIndex !== null) {
-        xmove[stoppedBubbleIndex] = -0.005 + Math.random()
-        ymove[stoppedBubbleIndex] = 0.001 + Math.random() * 0.02
+        xmove[stoppedBubbleIndex] = -0.1 + Math.random() * 0.2
+        ymove[stoppedBubbleIndex] = 0.1 + Math.random() * 0.025
         stoppedBubbleIndex = null
       }
     }
-
+    document.addEventListener('scroll', e => {
+      resetBubbles()
+    })
     canvas.addEventListener('mousedown', e => {
       resetBubbles()
     })
+    let rotation = 0
     canvas.addEventListener('mousemove', e => {
       resetBubbles()
+      // let offsetX = e.offsetX
+      // let offsetY = e.offsetY
+      // let xv = -1 + (offsetX / e.target.width) * 2
+      // camera.position.x = 8 * xv
+      // camera.position.z = 8 - Math.abs(xv) * 8
+      // camera.rotation.y = Math.PI * xv / 2
+
+      // let yv = -1 + (offsetY / e.target.height) * 2
+      // camera.position.y = 8 * yv
+      // camera.position.z = 8 - Math.abs(yv) * 8
+      // camera.rotation.x = Math.PI * yv / 2
     })
     canvas.addEventListener('mouseup', e => {
       resetMoves()
@@ -115,7 +135,6 @@ export default function Home() {
       resetMoves()
       oc.enabled = true
     })
-
     const animate = () => {
       requestAnimationFrame(animate)
       renderer.setSize(window.innerWidth, window.innerHeight);
@@ -125,10 +144,68 @@ export default function Home() {
 
   }, [])
   return (
-    <div>
-      <canvas id='canvas'></canvas>
-      <div>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere velit reiciendis officiis a neque temporibus asperiores at, animi, harum fugiat non aliquam commodi quis delectus aspernatur sed cupiditate rerum quaerat fuga? Ducimus, itaque quaerat sit, aliquid totam maiores id, incidunt ratione expedita excepturi aspernatur hic rem pariatur sequi. Dolorem culpa assumenda quidem dolores beatae nemo. Deserunt alias, similique quam nulla maiores ab! Sequi illum iusto explicabo in sunt nobis maxime provident est voluptas temporibus quibusdam ipsum fugiat minus expedita quas modi tenetur, ea odio dolore, molestiae tempora omnis qui. Autem veritatis neque quas, veniam earum vitae officia animi, similique fugiat dolorem consectetur incidunt natus eligendi iste molestias, laborum laudantium fugit ab nobis omnis vero voluptatum beatae quidem consequatur. Error tenetur consequatur illo tempore saepe nostrum enim consectetur maxime sapiente deserunt fugiat illum blanditiis obcaecati neque aliquid commodi eius earum laborum, repellendus nihil eligendi temporibus. Repellat fuga dolorem dicta reprehenderit quasi tempora eius illum fugiat necessitatibus totam, rerum ipsa nulla nemo quam maiores natus aperiam dolor numquam est optio reiciendis, sunt commodi soluta. Fuga voluptatibus laudantium sunt in architecto sint quisquam hic dolor temporibus, ipsa suscipit ad quo, recusandae tempore? Magni asperiores maiores cum totam quidem eos, doloribus veritatis alias! Nihil laudantium illum maiores reiciendis, labore non optio omnis eum facere maxime nobis cumque quasi laboriosam eaque vitae? Aspernatur vel fugiat ducimus expedita atque dolorum fugit officia saepe, totam animi natus repellat velit, voluptas corrupti obcaecati quas necessitatibus! Atque vel debitis, ab odio a dolores accusamus incidunt animi at reiciendis similique nostrum praesentium. Voluptatem, sapiente dolorem totam alias rem modi cumque possimus deleniti magni, delectus recusandae nihil ad omnis ipsum inventore sint error cum reiciendis architecto suscipit. Magnam quos natus ea quibusdam dolorum eaque ullam. Minima perspiciatis animi harum consequuntur, velit pariatur necessitatibus, libero laborum sint sed asperiores voluptatem tempora! Omnis tenetur mollitia sequi id reiciendis rem rerum maxime eius nisi, consequuntur commodi nobis possimus illum esse et aliquam expedita facilis. In a culpa corrupti. Repudiandae unde dicta doloribus similique nobis, quam voluptate quis ratione nostrum possimus porro eius rem vel dignissimos dolore quibusdam atque fuga exercitationem officiis deleniti deserunt perferendis! Cum aut quis in voluptatibus. Voluptatem maiores optio totam soluta eligendi magni vitae beatae ipsum! Odio possimus itaque laboriosam accusamus repellat optio voluptas id labore voluptatibus fuga quam architecto, numquam explicabo vel quasi esse perferendis cupiditate quia saepe, veniam maiores! Optio dicta impedit quidem culpa cupiditate facere aliquam numquam necessitatibus. Quam sint cum suscipit eaque omnis distinctio commodi dolore possimus recusandae, nemo dignissimos consequatur ipsam, inventore, blanditiis quaerat aut vel odit placeat quo! Quae praesentium architecto sint molestiae voluptate ad in magni corporis nostrum consequatur exercitationem provident quam ut tempore, unde laborum vero? Placeat, tenetur id neque harum in odit voluptas impedit deserunt, dignissimos doloribus tempora nobis similique, magni optio temporibus. Architecto aut, quidem, ipsa odit voluptatibus ea nam quaerat rem debitis totam, minima quas? Corporis, provident? Error consequatur explicabo eaque tenetur sapiente rem voluptate laboriosam, nihil, corrupti odit quia ducimus. Ab officiis soluta fuga. Quam cum facere magnam accusantium.
+    <div className='home'>
+      <div className="cover">
+        <img src={myImage} alt="" id="myImage" />
+        <canvas id='canvas'></canvas>
+      </div>
+      <div className="timeline">
+        <Typography variant='h3'>TIMELINE</Typography>
+        <TimeLine items={[1, 2, 3, 4]} />
+      </div>
+      <div className="skillsArea">
+        <canvas id="shape"></canvas>
+        <div className="skills">
+          <Typography variant='h3'>SKILLS</Typography>
+          <div className="skillsCubes">
+            <div className="cubes-shadows">
+              <div className="skillsCube" id="firstCube">
+                <div className="skillsCubeFaces skillsCubeFace-1">
+                  <img src={myImage} alt="skill" />
+                </div>
+                <div className="skillsCubeFaces skillsCubeFace-2">
+                  <img src={myImage} alt="skill" />
+                </div>
+                <div className="skillsCubeFaces skillsCubeFace-3">
+                  <img src={myImage} alt="skill" />
+                </div>
+                <div className="skillsCubeFaces skillsCubeFace-4">
+                  <img src={myImage} alt="skill" />
+                </div>
+                <div className="skillsCubeFaces skillsCubeFace-5">
+                  <img src={myImage} alt="skill" />
+                </div>
+                <div className="skillsCubeFaces skillsCubeFace-6">
+                  <img src={myImage} alt="skill" />
+                </div>
+              </div>
+              <div className="cubeShadow"></div>
+            </div>
+            <div className="cubes-shadows">
+              <div className="skillsCube" id="secondCube">
+                <div className="skillsCubeFaces skillsCubeFace-1">
+                  <img src={myImage} alt="skill" />
+                </div>
+                <div className="skillsCubeFaces skillsCubeFace-2">
+                  <img src={myImage} alt="skill" />
+                </div>
+                <div className="skillsCubeFaces skillsCubeFace-3">
+                  <img src={myImage} alt="skill" />
+                </div>
+                <div className="skillsCubeFaces skillsCubeFace-4">
+                  <img src={myImage} alt="skill" />
+                </div>
+                <div className="skillsCubeFaces skillsCubeFace-5">
+                  <img src={myImage} alt="skill" />
+                </div>
+                <div className="skillsCubeFaces skillsCubeFace-6">
+                  <img src={myImage} alt="skill" />
+                </div>
+              </div>
+              <div className="cubeShadow"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

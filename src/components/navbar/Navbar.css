@@ -1,11 +1,11 @@
 #navbar {
   width: 100%;
-  height: 50px;
+  height: 70px;
   display: flex;
   align-items: flex-end;
   justify-content: space-evenly;
   padding: 0px 3vw;
-  position: fixed;
+  position: absolute;
   top: 0px;
   left: 0px;
   user-select: none;
@@ -30,19 +30,17 @@
   z-index: 999;
 }
 
-.navListItem:hover>.icon {
+.icon:hover {
   transform: scale(1.3);
-}
-
-.active {
-  border-bottom-width: 5px;
 }
 
 .active>.icon {
-  transform: scale(1.3);
+  transform: scale(1.3) !important;
 }
 
 .tooltipText {
+  font-size: 14px;
+  font-family: 'Courier New', Courier, monospace;
   visibility: hidden;
   width: fit-content;
   background-color: rgba(0, 0, 0, 0.5);
@@ -51,7 +49,7 @@
   padding: 5px 10px;
   z-index: 1;
   position: absolute;
-  top: 110%;
+  top: 90%;
   transform: translate(-20%);
   opacity: 0;
   transition: all 0.5s;
@@ -68,7 +66,8 @@
   border-color: transparent transparent rgba(0, 0, 0, 0.5) transparent;
 }
 
-.navListItem:hover>.tooltipText {
+
+.navlink:hover+.tooltipText {
   visibility: visible;
   opacity: 1;
 }
@@ -78,32 +77,33 @@
 
 .wave_anim {
   width: 100%;
-  height: 50px;
-  position: fixed;
+  height: 70px;
+  position: absolute;
   top: 0px;
   left: 0px;
   background: transparent;
   overflow: hidden;
   background-color: aliceblue;
+  z-index: 998;
 }
 
 .wave_anim .wave {
   width: 100%;
-  height: 50px;
-  position: fixed;
+  height: 70px;
+  position: inherit;
   top: 0px;
   left: 0px;
-  background: url(https://cdn.kcak11.com/codepen_assets/wave_animation/wave.svg) repeat-x;
-  background-size: 50% 50px;
+  background: url(../../Images/wave.svg) repeat-x;
+  background-size: 50% 70px;
 }
 
 .wave_anim .wave.wave1 {
   width: 100%;
-  height: 50px;
-  position: fixed;
+  height: 70px;
+  position: inherit;
   top: 0px;
   left: 0px;
-  animation: animate 7s linear infinite;
+  animation: animate 10s linear infinite;
   animation-delay: 4s;
   opacity: 0.3;
 }
@@ -111,11 +111,11 @@
 
 .wave_anim .wave.wave2 {
   width: 100%;
-  height: 50px;
-  position: fixed;
+  height: 70px;
+  position: inherit;
   top: 0px;
   left: 0px;
-  animation: animate2 10s linear infinite;
+  animation: animate2 5s linear infinite;
   z-index: 1;
   opacity: 0.3;
 }
@@ -137,5 +137,29 @@
 
   100% {
     background-position-x: 50%;
+  }
+}
+
+#boat {
+  position: fixed;
+  top: 0px;
+  height: 30px;
+  width: 30px;
+  z-index: 999;
+  transform: translateX(-50%);
+  animation: boatAnim 4s ease-in-out infinite;
+}
+
+@keyframes boatAnim {
+  0% {
+    transform: translateX(-50%) rotateZ(20deg);
+  }
+
+  50% {
+    transform: translateX(-50%) rotateZ(-20deg);
+  }
+
+  100% {
+    transform: translateX(-50%) rotateZ(20deg);
   }
 }

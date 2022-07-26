@@ -1,41 +1,99 @@
 import './Navbar.css'
-import React from 'react'
-import { NavLink } from 'react-router-dom'
-import InfoIcon from '@mui/icons-material/Info';
-import ViewListIcon from '@mui/icons-material/ViewList';
-import WorkIcon from '@mui/icons-material/Work';
-import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
+import React, { useEffect, useState } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
+import { Info, ViewList, Work, ConnectWithoutContact } from '@mui/icons-material';
 import logo from '../../Images/logo.png'
+import boat from '../../Images/boat.png'
 
 export default function Navbar() {
+  let location = useLocation()
+  const [active, setActive] = useState(location.pathname)
+  useEffect(() => {
+    setActive(location.pathname)
+  }, [location])
+  useEffect(() => {
+    window.onscroll = () => {
+      var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      document.getElementById("boat").style.left = scrolled + "%";
+    }
+
+    document.getElementById(active).style.borderBottomWidth = '5px'
+
+    document.querySelectorAll('.icon').forEach((icon) => {
+      icon.addEventListener('mouseover', () => {
+        icon.parentElement.nextSibling.style.visibiity = 'show'
+        icon.parentElement.nextSibling.style.opacity = '1'
+        icon.style.transform = 'scale(1.3)'
+      })
+      icon.addEventListener('mouseout', () => {
+        icon.parentElement.nextSibling.style.visibiity = 'hidden'
+        icon.parentElement.nextSibling.style.opacity = '0'
+        icon.style.transform = 'scale(1)'
+      })
+      icon.addEventListener('touchend', () => {
+        icon.parentElement.nextSibling.style.visibiity = 'hidden'
+        icon.parentElement.nextSibling.style.opacity = '0'
+        icon.style.transform = 'scale(1)'
+      })
+      icon.addEventListener('touchstart', () => {
+        icon.parentElement.nextSibling.style.visibiity = 'show'
+        icon.parentElement.nextSibling.style.opacity = '1'
+        icon.style.transform = 'scale(1.3)'
+      })
+    })
+  }, [])
+  useEffect(() => {
+    const activeElement = document.getElementById(active)
+    activeElement.style.borderBottomWidth = '5px'
+    activeElement.lastChild.style.visibiity = 'show'
+    activeElement.lastChild.style.opacity = '1'
+    setTimeout(() => {
+      activeElement.lastChild.style.visibiity = 'hidden'
+      activeElement.lastChild.style.opacity = '0'
+    }, 500)
+    return () => activeElement.style.borderBottomWidth = '0px'
+  }, [active])
   return (
-    <>
+    <div id='nav-boat-container'>
+      <img src={boat} alt="" id='boat' />
       <div id='navbar'>
-        <NavLink to='/about' className="navListItem" id="listItem-1" style={{ borderColor: '#d9534f' }}>
-          <InfoIcon className='icon' sx={{ color: '#d9534f' }} />
+        <div className="navListItem" id="/about" style={{ borderColor: '#d9534f' }}>
+          <NavLink to='/about' className='navlink' onClick={() => setActive('/about')}>
+            <Info className='icon' sx={{ color: '#d9534f' }} />
+          </NavLink>
           <span className='tooltipText'>About</span>
-        </NavLink>
-        <NavLink to='/projects' className="navListItem" id="listItem-2" style={{ borderColor: '#0f6b8f' }}>
-          <ViewListIcon className='icon' sx={{ color: '#0f6b8f' }} />
+        </div>
+        <div className="navListItem" id="/projects" style={{ borderColor: '#0f6b8f' }}>
+          <NavLink to='/projects' className='navlink' onClick={() => setActive('/projects')}>
+            <ViewList className='icon' sx={{ color: '#0f6b8f' }} />
+          </NavLink>
           <span className='tooltipText'>Projects</span>
-        </NavLink>
-        <NavLink to='/' className="navListItem" id="listItem-3" activeclassname='active' style={{ borderColor: '#8d99c5' }}>
-          <img src={logo} alt="Gopal" id='logo' className='icon' />
+        </div>
+        <div className="navListItem" id="/" style={{ borderColor: '#b52771' }}>
+          <NavLink to='/' className='navlink' activeclassname='active' onClick={() => setActive('/')}>
+            <img src={logo} alt="Gopal" id='logo' className='icon' />
+          </NavLink>
           <span className='tooltipText'>Home</span>
-        </NavLink>
-        <NavLink to='/myCareer' className="navListItem" id="listItem-4" style={{ borderColor: 'green' }}>
-          <WorkIcon className='icon' sx={{ color: 'green' }} />
+        </div>
+        <div className="navListItem" id="/myCareer" style={{ borderColor: 'green' }}>
+          <NavLink to='/myCareer' className='navlink' onClick={() => setActive('/myCareer')}>
+            <Work className='icon' sx={{ color: 'green' }} />
+          </NavLink>
           <span className='tooltipText'>My Career</span>
-        </NavLink>
-        <NavLink to='/getConnected' className="navListItem" id="listItem-5" style={{ borderColor: '#ff5200' }}>
-          <ConnectWithoutContactIcon className='icon' sx={{ color: '#ff5200' }} />
+        </div>
+        <div className="navListItem" id="/getConnected" style={{ borderColor: '#ff5200' }}>
+          <NavLink to='/getConnected' className='navlink' onClick={() => setActive('/getConnected')}>
+            <ConnectWithoutContact className='icon' sx={{ color: '#ff5200' }} />
+          </NavLink>
           <span className='tooltipText'>Get Connected</span>
-        </NavLink>
+        </div>
       </div >
       <div className='wave_anim'>
         <div className='wave wave1'></div>
         <div className='wave wave2'></div>
       </div>
-    </>
+    </div>
   )
 }
